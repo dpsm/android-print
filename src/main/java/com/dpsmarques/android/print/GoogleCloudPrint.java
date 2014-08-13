@@ -15,11 +15,16 @@
  */
 package com.dpsmarques.android.print;
 
+import android.text.TextUtils;
+
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.Header;
 import retrofit.http.Part;
+import retrofit.http.Query;
+import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedFile;
+import retrofit.mime.TypedInput;
 import retrofit.mime.TypedString;
 import rx.Observable;
 
@@ -42,22 +47,76 @@ public class GoogleCloudPrint implements GoogleCloudPrintApi {
         mGoogleCloudPrintApi = restAdapter.create(GoogleCloudPrintApi.class);
     }
 
+    GoogleCloudPrint(final GoogleCloudPrintApi googleCloudPrintApi) {
+        mGoogleCloudPrintApi = googleCloudPrintApi;
+    }
+
     @Override
     public Observable<Response> getPrinters(@Header("Authorization") final String token) {
+        assertNotNullOrEmpty("Token", token);
         return mGoogleCloudPrintApi.getPrinters(formatToken(token));
     }
 
     @Override
     public Observable<Response> submitPrintJob(@Header("Authorization") final String token,
-                                               @Part("printerid") final TypedString printerID,
-                                               @Part("title") final TypedString title,
-                                               @Part("ticket") final TypedString ticket,
+                                               @Part("printerid") final String printerID,
+                                               @Part("title") final String title,
+                                               @Part("ticket") final String ticket,
                                                @Part("content") final TypedFile content) {
+        assertNotNullOrEmpty("Token", token);
+        assertNotNullOrEmpty("Printer ID", printerID);
+        assertNotNullOrEmpty("Job Title", title);
+        assertNotNullOrEmpty("Job Ticket", ticket);
+        assertNotNullOrEmpty("Job Content", content);
+
         return mGoogleCloudPrintApi.submitPrintJob(formatToken(token),
                 printerID,
                 title,
                 ticket,
                 content);
+    }
+
+    private void assertNotNullOrEmpty(final String message, final String string) {
+        if (TextUtils.isEmpty(string)) {
+            throw new IllegalArgumentException(message + " can not be null or empty.");
+        }
+    }
+
+    @Override
+    public Observable<Response> getPrinter(@Header("Authorization") final String token,
+                                           @Query("printerid") final String printerID,
+                                           @Query("use_cdd") final boolean useCDDFormat,
+                                           @Query("extra_fields") final String extraFields) {
+        assertNotNullOrEmpty("Token", token);
+        assertNotNullOrEmpty("Printer ID", printerID);
+
+        return mGoogleCloudPrintApi.getPrinter(formatToken(token), printerID, useCDDFormat, extraFields);
+    }
+
+    @Override
+    public Observable<Response> getJobs(@Header("Authorization") final String token,
+                                        @Query("printerid") final String printerID,
+                                        @Query("owner") final String jobOwner,
+                                        @Query("status") final String jobStatus) {
+        assertNotNullOrEmpty("Token", token);
+        assertNotNullOrEmpty("Printer ID", printerID);
+
+        return mGoogleCloudPrintApi.getJobs(formatToken(token), printerID, jobOwner, jobStatus);
+    }
+
+    @Override
+    public Observable<Response> deleteJob(@Header("Authorization") final String token,
+                                          @Query("jobid") final String jobID) {
+        assertNotNullOrEmpty("Token", token);
+        assertNotNullOrEmpty("Job ID", jobID);
+
+        return mGoogleCloudPrintApi.deleteJob(formatToken(token), jobID);
+    }
+
+    private void assertNotNullOrEmpty(final String message, final TypedInput input) {
+        if (input == null || input.length() == 0) {
+            throw new IllegalArgumentException(message + " can not be null or empty.");
+        }
     }
 
     private static String formatToken(final String token) {

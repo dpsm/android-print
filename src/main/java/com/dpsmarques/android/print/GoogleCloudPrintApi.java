@@ -25,6 +25,7 @@ import retrofit.http.Header;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 import retrofit.mime.TypedString;
 import rx.Observable;
@@ -54,12 +55,70 @@ public interface GoogleCloudPrintApi {
      * @param title the title of the print job.
      * @param ticket a print ticket in CJT format.
      * @param content the content of the file to be printed.
+     *
+     * @return an Observable which emits a Response corresponding to the search
+     * result.
      */
     @Multipart
     @POST("/submit")
     Observable<Response> submitPrintJob(@Header("Authorization") String token,
-                                        @Part("printerid") TypedString printerID,
-                                        @Part("title") TypedString title,
-                                        @Part("ticket") TypedString ticket,
+                                        @Part("printerid") String printerID,
+                                        @Part("title") String title,
+                                        @Part("ticket") String ticket,
                                         @Part("content") TypedFile content);
+
+    /**
+     * Retrieves a printer's information.
+     *
+     * @param token an OAuth token used to access the user printer.
+     * @param printerID the ID of the cloud printer.
+     * @param useCDDFormat Include this parameter with a value of "true" to retrieve the printer's
+     *                     capabilities in <a href="https://developers.google.com/cloud-print/docs/cdd#cdd">CDD</a>
+     *                     format (the capabilities stored for the printer are translated to CDD
+     *                     format if they were provided in a native format).
+     * @param extraFields Comma-separated list of extra fields to include in the returned printer
+     *                    object, see <a href="https://developers.google.com/cloud-print/docs/appInterfaces#extra_fields">Extra Fields</a>
+     *                    for Printers for more information.
+     * @return an Observable which emits a Response corresponding to the search
+     * result.
+     */
+    @GET("/printer")
+    Observable<Response> getPrinter(@Header("Authorization") String token,
+                                    @Query("printerid") String printerID,
+                                    @Query("use_cdd") boolean useCDDFormat,
+                                    @Query("extra_fields") String extraFields);
+
+    /**
+     * Retrieves a printer's jobs information.
+     *
+     * @param token an OAuth token used to access the user printer.
+     * @param printerID the ID of the cloud printer.
+     * @param jobOwner filters the jobs by only returning jobs submitted by the specified user.
+     * @param jobStatus filters the jobs by only returning jobs with a given <a href="https://developers.google.com/cloud-print/docs/cdd#oldjobstatus">status</a>.
+     *
+     * @return an Observable which emits a Response corresponding to the search
+     * result.
+     */
+    @GET("/jobs")
+    Observable<Response> getJobs(@Header("Authorization") String token,
+                                 @Query("printerid") String printerID,
+                                 @Query("owner") String jobOwner,
+                                 @Query("status") String jobStatus);
+
+
+    /**
+     * Deletes a previously submitted job.
+     *
+     * @param token an OAuth token used to access the user printer.
+     * @param jobID the job unique identifier.
+     *
+     * @see #getJobs(String, String, String, String)
+     *
+     * @return an Observable which emits a Response corresponding to the search
+     * result.
+     */
+    @GET("/deletejob")
+    Observable<Response> deleteJob(@Header("Authorization") String token,
+                                   @Query("jobid") String jobID);
+
 }

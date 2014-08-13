@@ -13,42 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dpsmarques.android.print.gson.model;
+package com.dpsmarques.android.print.jackson.model;
 
 import com.dpsmarques.android.print.model.Printer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * Gson implementation of Printer.
+ * The Jackson based implementation of the Printer interface.
  */
-public class GsonPrinter extends GsonModel implements Printer {
+public class JacksonPrinter extends JacksonModel implements Printer {
 
-    public GsonPrinter(final JsonObject jsonObject) {
-        super(jsonObject);
+    public JacksonPrinter(final ObjectNode objectNode) {
+        super(objectNode);
     }
 
     @Override
     public String getId() {
-        final JsonElement value = mJsonObject.get(ID);
-        return value != null ? value.getAsString() : null;
+        return mObjectNode.get(ID).asText();
     }
 
     @Override
     public String getName() {
-        final JsonElement value = mJsonObject.get(NAME);
-        return value != null ? value.getAsString() : null;
+        return mObjectNode.get(NAME).asText();
     }
 
     @Override
     public String getDescription() {
-        final JsonElement value = mJsonObject.get(DESCRIPTION);
-        return value != null ? value.getAsString() : null;
-    }
-
-    @Override
-    public String toString() {
-        return getName();
+        return mObjectNode.get(DESCRIPTION).asText();
     }
 
     @Override
@@ -56,11 +47,9 @@ public class GsonPrinter extends GsonModel implements Printer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final GsonPrinter that = (GsonPrinter) o;
         final String id = getId();
-        final String otherId = ((GsonPrinter) o).getId();
-
-        if (id != null ? !id.equals(otherId) : otherId != null) return false;
+        final String otherID = ((JacksonPrinter) o).getId();
+        if (id != null ? !id.equals(otherID) : otherID != null) return false;
 
         return true;
     }
@@ -68,5 +57,10 @@ public class GsonPrinter extends GsonModel implements Printer {
     @Override
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

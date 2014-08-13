@@ -18,13 +18,18 @@ package com.dpsmarques.android.print.gson.model;
 import com.google.gson.JsonObject;
 
 /**
- * An abstract Gson model which allows retrieving the original JSON structure behind this model
- * concrete implementations.
+ * This abstract class defines a model built from GSON.
  */
-public interface GsonModel {
+public abstract class GsonModel {
 
-    JsonObject getJsonObject();
+    protected final JsonObject mJsonObject;
 
-    void setJsonObject(final JsonObject jsonObject);
+    public GsonModel(final JsonObject jsonObject) {
+        mJsonObject = jsonObject;
+    }
+
+    public JsonObject getJsonObject() {
+        return mJsonObject;
+    }
 
 }

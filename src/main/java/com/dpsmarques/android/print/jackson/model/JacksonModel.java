@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dpsmarques.android.print.model;
+package com.dpsmarques.android.print.jackson.model;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * Defines a basic interface with accessor methods for a print search result.
- *
- * @see com.dpsmarques.android.print.GoogleCloudPrint#getPrinters(String)
- * @see com.dpsmarques.android.print.gson.model.GsonPrinterSearchResult
- * @see com.dpsmarques.android.print.gson.GsonPrinterSearchResultOperator
+ * This abstract class defines a model built from Jackson.
  */
-public interface PrinterSearchResult {
+public abstract class JacksonModel {
 
-    public static final String PRINTERS = "printers";
+    protected final ObjectNode mObjectNode;
 
-    public List<Printer> getPrinters();
+    protected JacksonModel(final ObjectNode objectNode) {
+        mObjectNode = objectNode;
+    }
+
+    public ObjectNode getJsonNode() {
+        return mObjectNode;
+    }
 
 }

@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dpsmarques.android.print.model;
+package com.dpsmarques.android.print.jackson;
 
-import java.util.List;
+import com.dpsmarques.android.print.jackson.model.JacksonPrinterSearchResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Defines a basic interface with accessor methods for a print search result.
- *
- * @see com.dpsmarques.android.print.GoogleCloudPrint#getPrinters(String)
- * @see com.dpsmarques.android.print.gson.model.GsonPrinterSearchResult
- * @see com.dpsmarques.android.print.gson.GsonPrinterSearchResultOperator
+ * Extends JacksonResultOperator targeting the JacksonPrinterSearchResult class.
  */
-public interface PrinterSearchResult {
+public class JacksonPrinterSearchResultOperator extends JacksonResultOperator<JacksonPrinterSearchResult> {
 
-    public static final String PRINTERS = "printers";
+    public JacksonPrinterSearchResultOperator(final ObjectMapper mapper) {
+        super(mapper, JacksonPrinterSearchResult.class);
+    }
 
-    public List<Printer> getPrinters();
-
+    public JacksonPrinterSearchResultOperator() {
+        super(JacksonPrinterSearchResult.class);
+    }
 }

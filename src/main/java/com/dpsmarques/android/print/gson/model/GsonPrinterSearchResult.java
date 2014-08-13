@@ -17,33 +17,38 @@ package com.dpsmarques.android.print.gson.model;
 
 import com.dpsmarques.android.print.model.Printer;
 import com.dpsmarques.android.print.model.PrinterSearchResult;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Gson implementation of PrinterSearchResult.
  */
-public class GsonPrinterSearchResult implements PrinterSearchResult, GsonModel {
+public class GsonPrinterSearchResult extends GsonModel implements PrinterSearchResult {
 
-    List<GsonPrinter> printers;
+    private final List<GsonPrinter> printers;
 
-    JsonObject mJsonObject;
+    public GsonPrinterSearchResult(final JsonObject jsonObject) {
+        super(jsonObject);
+
+        printers = new LinkedList<GsonPrinter>();
+        final JsonArray printersArray = mJsonObject.getAsJsonArray(PRINTERS);
+        if (printersArray != null) {
+            final Iterator<JsonElement> iterator = printersArray.iterator();
+            while (iterator.hasNext()) {
+                printers.add(new GsonPrinter(iterator.next().getAsJsonObject()));
+            }
+        }
+    }
 
     @Override
     public List<Printer> getPrinters() {
         return new ArrayList<Printer>(printers);
-    }
-
-    @Override
-    public JsonObject getJsonObject() {
-        return mJsonObject;
-    }
-
-    @Override
-    public void setJsonObject(final JsonObject mJsonObject) {
-        this.mJsonObject = mJsonObject;
     }
 
     @Override
