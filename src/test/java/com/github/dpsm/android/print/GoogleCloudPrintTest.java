@@ -61,9 +61,9 @@ public class GoogleCloudPrintTest extends TestCase {
         final TypedFile typedFile = Mockito.mock(TypedFile.class);
         Mockito.when(typedFile.length()).thenReturn(1L);
 
-        cloudPrint.submitPrintJob("ddd", "ID", "something", "something", typedFile);
-        Mockito.verify(api, Mockito.never()).submitPrintJob("ddd", "ID", "something", "something", typedFile);
-        Mockito.verify(api).submitPrintJob("Bearer ddd", "ID", "something", "something", typedFile);
+        cloudPrint.submitPrintJob("ddd", "ID", "something", "something", typedFile, typedFile.mimeType());
+        Mockito.verify(api, Mockito.never()).submitPrintJob("ddd", "ID", "something", "something", typedFile, typedFile.mimeType());
+        Mockito.verify(api).submitPrintJob("Bearer ddd", "ID", "something", "something", typedFile, typedFile.mimeType());
     }
 
     @Test(expected = IllegalArgumentException.class)
