@@ -65,7 +65,8 @@ public interface GoogleCloudPrintApi {
                                         @Part("printerid") String printerID,
                                         @Part("title") String title,
                                         @Part("ticket") String ticket,
-                                        @Part("content") TypedFile content);
+                                        @Part("content") TypedFile content,
+                                        @Part("contentType") String contentType);
 
     /**
      * Retrieves a printer's information.

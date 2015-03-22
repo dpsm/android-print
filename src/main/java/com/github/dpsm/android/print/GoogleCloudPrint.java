@@ -62,7 +62,8 @@ public class GoogleCloudPrint implements GoogleCloudPrintApi {
                                                @Part("printerid") final String printerID,
                                                @Part("title") final String title,
                                                @Part("ticket") final String ticket,
-                                               @Part("content") final TypedFile content) {
+                                               @Part("content") final TypedFile content,
+                                               @Part("contentType") final String contentType) {
         assertNotNullOrEmpty("Token", token);
         assertNotNullOrEmpty("Printer ID", printerID);
         assertNotNullOrEmpty("Job Title", title);
@@ -73,7 +74,8 @@ public class GoogleCloudPrint implements GoogleCloudPrintApi {
                 printerID,
                 title,
                 ticket,
-                content);
+                content,
+                content.mimeType());
     }
 
     private void assertNotNullOrEmpty(final String message, final String string) {
